@@ -1,0 +1,21 @@
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+
+export default function ProtectedRoute({ children, requiredRole }) {
+  const { user, loading, isCEO, isPegawai } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600" />
+      </div>
+    )
+  }
+
+  if (!user) return <Navigate to="/login" />
+
+  if (requiredRole === 'CEO' && !isCEO) return <Navigate to="/kasir" />
+  if (requiredRole === 'Pegawai' && !isPegawai) return <Navigate to="/ceo" />
+
+  return children
+}
