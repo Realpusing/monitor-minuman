@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 import {
   ShoppingBag, Plus, Minus, Send, Clock, CheckCircle,
   Coffee, Trash2, Receipt, TrendingUp, FileText, X, Eye,
-  ChevronUp
+  ChevronUp, ChevronDown
 } from 'lucide-react'
 
 export default function KasirPage() {
@@ -119,45 +119,50 @@ export default function KasirPage() {
   const todayItems = riwayat.reduce((sum, r) => sum + (r.jumlah_beli || 0), 0)
 
   return (
-    <div className="min-h-screen bg-gray-50" style={{ paddingBottom: totalItem > 0 ? '140px' : '80px' }}>
+    <div className="min-h-screen bg-gray-50 pb-24 lg:pb-6">
       <Navbar />
 
-      {/* SUCCESS TOAST */}
+      {/* ==================== SUCCESS TOAST ==================== */}
       {success && (
-        <div className="fixed top-20 left-1/2 z-50 w-11/12 max-w-sm" style={{ transform: 'translateX(-50%)' }}>
-          <div className="bg-emerald-500 text-white px-5 py-3 rounded-2xl shadow-lg flex items-center gap-2 font-medium text-sm">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-slideUp w-[90%] max-w-sm">
+          <div className="bg-emerald-500 text-white px-5 py-3 rounded-2xl shadow-lg shadow-emerald-200 flex items-center gap-2 font-medium text-sm">
             <CheckCircle size={18} />
             {success}
           </div>
         </div>
       )}
 
-      {/* RESEP MODAL */}
+      {/* ==================== RESEP MODAL ==================== */}
       {resepModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setResepModal(null)} />
-          <div className="relative bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-5 text-white flex-shrink-0">
+
+          <div className="relative bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl animate-slideUp overflow-hidden max-h-[85vh] flex flex-col">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-5 sm:p-6 text-white flex-shrink-0">
               <button
                 onClick={() => setResepModal(null)}
-                className="absolute top-3 right-3 p-2 bg-white/20 rounded-full hover:bg-white/30 cursor-pointer"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 bg-white/20 rounded-full hover:bg-white/30 cursor-pointer"
               >
                 <X size={18} />
               </button>
+
               <span className="inline-block text-xs px-2.5 py-1 rounded-full font-semibold mb-2 bg-white/25">
                 {resepModal.inventory_cup?.nama_cup || (resepModal.id_cup === 1 ? 'Cup 16oz' : 'Cup 22oz')}
               </span>
-              <h3 className="text-xl font-bold">{resepModal.nama_item}</h3>
+              <h3 className="text-xl sm:text-2xl font-bold">{resepModal.nama_item}</h3>
               <p className="text-amber-100 text-lg font-semibold mt-1">{formatRp(resepModal.harga_jual)}</p>
             </div>
-            <div className="p-5 overflow-y-auto flex-1">
+
+            {/* Body */}
+            <div className="p-5 sm:p-6 overflow-y-auto flex-1">
               {resepModal.keterangan && resepModal.keterangan.trim() !== '' ? (
                 <div>
-                  <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm">
-                    <FileText size={16} className="text-amber-500" />
+                  <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                    <FileText size={18} className="text-amber-500" />
                     Resep / Cara Buat
                   </h4>
-                  <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4">
+                  <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 sm:p-5">
                     <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">
                       {resepModal.keterangan}
                     </p>
@@ -171,6 +176,8 @@ export default function KasirPage() {
                   <p className="text-gray-400 text-sm">Belum ada resep untuk menu ini</p>
                 </div>
               )}
+
+              {/* Quick Add to Cart */}
               <div className="mt-5 pt-5 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500 font-medium">Tambah ke keranjang</span>
@@ -178,9 +185,9 @@ export default function KasirPage() {
                     <button
                       onClick={() => updateCart(resepModal.id_menu, -1)}
                       disabled={(cart[resepModal.id_menu] || 0) === 0}
-                      className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer ${
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer btn-press ${
                         (cart[resepModal.id_menu] || 0) > 0
-                          ? 'bg-red-100 text-red-600'
+                          ? 'bg-red-100 text-red-600 active:bg-red-200'
                           : 'bg-gray-100 text-gray-300'
                       }`}
                     >
@@ -191,7 +198,7 @@ export default function KasirPage() {
                     </span>
                     <button
                       onClick={() => updateCart(resepModal.id_menu, 1)}
-                      className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center cursor-pointer"
+                      className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-600 active:bg-emerald-200 flex items-center justify-center cursor-pointer btn-press"
                     >
                       <Plus size={20} />
                     </button>
@@ -203,17 +210,21 @@ export default function KasirPage() {
         </div>
       )}
 
-      {/* CART BOTTOM SHEET */}
+      {/* ==================== CART BOTTOM SHEET (MOBILE) ==================== */}
       {showCart && (
         <div className="fixed inset-0 z-40 flex items-end justify-center lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowCart(false)} />
-          <div className="relative bg-white w-full rounded-t-3xl shadow-2xl max-h-[80vh] flex flex-col">
+
+          <div className="relative bg-white w-full rounded-t-3xl shadow-2xl animate-slideUp max-h-[80vh] flex flex-col">
+            {/* Handle */}
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
               <div className="w-10 h-1 bg-gray-300 rounded-full" />
             </div>
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2 text-base">
-                <ShoppingBag size={18} className="text-amber-500" />
+
+            {/* Header */}
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 text-lg">
+                <ShoppingBag size={20} className="text-amber-500" />
                 Keranjang ({totalItem})
               </h3>
               <div className="flex items-center gap-3">
@@ -222,38 +233,53 @@ export default function KasirPage() {
                     <Trash2 size={12} /> Hapus
                   </button>
                 )}
-                <button onClick={() => setShowCart(false)} className="p-1.5 hover:bg-gray-100 rounded-full cursor-pointer">
-                  <X size={18} className="text-gray-400" />
+                <button onClick={() => setShowCart(false)} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
+                  <X size={20} className="text-gray-400" />
                 </button>
               </div>
             </div>
+
+            {/* Cart Items */}
             <div className="overflow-y-auto flex-1 p-4">
               {totalItem === 0 ? (
                 <div className="py-8 text-center">
-                  <ShoppingBag className="text-gray-300 mx-auto mb-2" size={28} />
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <ShoppingBag className="text-gray-300" size={24} />
+                  </div>
                   <p className="text-gray-400 text-sm">Keranjang kosong</p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {Object.entries(cart).map(([id, qty]) => {
                     const item = menu.find(m => m.id_menu === parseInt(id))
                     if (!item) return null
                     return (
-                      <div key={id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                      <div key={id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                        {/* Info */}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 truncate">{item.nama_item}</p>
                           <p className="text-xs text-gray-400 mt-0.5">{formatRp(item.harga_jual)} / cup</p>
                         </div>
+
+                        {/* Qty Controls */}
                         <div className="flex items-center gap-2">
-                          <button onClick={() => updateCart(item.id_menu, -1)} className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center cursor-pointer">
-                            <Minus size={12} />
+                          <button
+                            onClick={() => updateCart(item.id_menu, -1)}
+                            className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center active:bg-red-200 cursor-pointer"
+                          >
+                            <Minus size={14} />
                           </button>
-                          <span className="font-bold text-gray-800 w-5 text-center text-sm">{qty}</span>
-                          <button onClick={() => updateCart(item.id_menu, 1)} className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center cursor-pointer">
-                            <Plus size={12} />
+                          <span className="font-bold text-gray-800 w-6 text-center text-sm">{qty}</span>
+                          <button
+                            onClick={() => updateCart(item.id_menu, 1)}
+                            className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center active:bg-emerald-200 cursor-pointer"
+                          >
+                            <Plus size={14} />
                           </button>
                         </div>
-                        <p className="text-sm font-bold text-amber-600 min-w-[60px] text-right">
+
+                        {/* Price */}
+                        <p className="text-sm font-bold text-amber-600 min-w-[70px] text-right">
                           {formatRp(item.harga_jual * qty)}
                         </p>
                       </div>
@@ -262,21 +288,30 @@ export default function KasirPage() {
                 </div>
               )}
             </div>
+
+            {/* Checkout */}
             {totalItem > 0 && (
               <div className="p-4 bg-gray-50 border-t border-gray-100 flex-shrink-0">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-800 font-bold">Total</span>
-                  <span className="text-xl font-bold text-gray-800">{formatRp(totalHarga)}</span>
+                  <span className="text-gray-800 font-bold text-lg">Total</span>
+                  <span className="text-2xl font-bold text-gray-800">{formatRp(totalHarga)}</span>
                 </div>
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="w-full py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg cursor-pointer"
+                  className="w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-200 active:scale-[0.98] cursor-pointer"
                 >
                   {loading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : <Send size={17} />}
-                  {loading ? 'Memproses...' : 'Catat Penjualan'}
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Memproses...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Catat Penjualan</span>
+                    </>
+                  )}
                 </button>
               </div>
             )}
@@ -284,23 +319,26 @@ export default function KasirPage() {
         </div>
       )}
 
-      {/* HISTORY BOTTOM SHEET */}
+      {/* ==================== HISTORY BOTTOM SHEET (MOBILE) ==================== */}
       {showHistory && (
         <div className="fixed inset-0 z-40 flex items-end justify-center lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowHistory(false)} />
-          <div className="relative bg-white w-full rounded-t-3xl shadow-2xl max-h-[80vh] flex flex-col">
+
+          <div className="relative bg-white w-full rounded-t-3xl shadow-2xl animate-slideUp max-h-[80vh] flex flex-col">
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
               <div className="w-10 h-1 bg-gray-300 rounded-full" />
             </div>
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2 text-base">
-                <Clock size={18} className="text-gray-400" />
+
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 text-lg">
+                <Clock size={20} className="text-gray-400" />
                 Riwayat Hari Ini
               </h3>
-              <button onClick={() => setShowHistory(false)} className="p-1.5 hover:bg-gray-100 rounded-full cursor-pointer">
-                <X size={18} className="text-gray-400" />
+              <button onClick={() => setShowHistory(false)} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
+                <X size={20} className="text-gray-400" />
               </button>
             </div>
+
             <div className="overflow-y-auto flex-1">
               {riwayat.length === 0 ? (
                 <div className="py-8 text-center">
@@ -309,9 +347,9 @@ export default function KasirPage() {
               ) : (
                 <div className="divide-y divide-gray-50">
                   {riwayat.map(trx => (
-                    <div key={trx.id_transaksi} className="px-4 py-3">
+                    <div key={trx.id_transaksi} className="px-5 py-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0 mr-2">
+                        <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 truncate">{trx.menu_jualan?.nama_item}</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-xs text-gray-400">
@@ -321,13 +359,14 @@ export default function KasirPage() {
                             <span className="text-xs text-gray-400">{trx.jumlah_beli} cup</span>
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-emerald-600 flex-shrink-0">+{formatRp(trx.total_bayar)}</span>
+                        <span className="text-sm font-bold text-emerald-600 ml-2">+{formatRp(trx.total_bayar)}</span>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+
             {riwayat.length > 0 && (
               <div className="p-4 bg-emerald-50 border-t border-emerald-100 flex-shrink-0">
                 <div className="flex items-center justify-between">
@@ -340,42 +379,41 @@ export default function KasirPage() {
         </div>
       )}
 
-      {/* MAIN CONTENT */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pt-3 lg:pt-6">
+      {/* ==================== MAIN CONTENT ==================== */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pt-3 sm:pt-4 lg:pt-6">
 
-        {/* Stats Grid - 2x2 on mobile, 4 columns on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 lg:mb-6">
+        {/* Stats - Scrollable on Mobile */}
+        <div className="flex gap-3 overflow-x-auto pb-3 mb-4 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 lg:mb-6 -mx-3 px-3 sm:mx-0 sm:px-0">
           {[
-            { icon: Receipt, color: 'amber', label: 'Transaksi', value: riwayat.length, onClick: () => setShowHistory(true) },
+            { icon: Receipt, color: 'amber', label: 'Transaksi', value: riwayat.length },
             { icon: TrendingUp, color: 'emerald', label: 'Pendapatan', value: formatRp(todayTotal) },
             { icon: Coffee, color: 'blue', label: 'Cup Terjual', value: todayItems },
-            { icon: ShoppingBag, color: 'purple', label: 'Di Keranjang', value: `${totalItem} item`, onClick: () => setShowCart(true) }
+            { icon: ShoppingBag, color: 'purple', label: 'Keranjang', value: `${totalItem} item` }
           ].map((stat, i) => (
             <div
               key={i}
-              onClick={stat.onClick}
-              className={`bg-white rounded-2xl p-3 border border-gray-100 ${stat.onClick ? 'cursor-pointer active:scale-[0.97]' : ''}`}
+              onClick={stat.label === 'Keranjang' ? () => setShowCart(true) : stat.label === 'Transaksi' ? () => setShowHistory(true) : undefined}
+              className={`bg-white rounded-2xl p-3 sm:p-4 border border-gray-100 flex-shrink-0 w-[140px] sm:w-auto lg:w-auto card-hover ${
+                (stat.label === 'Keranjang' || stat.label === 'Transaksi') ? 'cursor-pointer lg:cursor-default active:scale-[0.98] lg:active:scale-100' : ''
+              }`}
             >
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 bg-${stat.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}
                   style={{
-                    backgroundColor:
-                      stat.color === 'amber' ? '#fef3c7' :
+                    backgroundColor: stat.color === 'amber' ? '#fef3c7' :
                       stat.color === 'emerald' ? '#d1fae5' :
                       stat.color === 'blue' ? '#dbeafe' : '#f3e8ff'
                   }}
                 >
-                  <stat.icon size={15} style={{
-                    color:
-                      stat.color === 'amber' ? '#d97706' :
+                  <stat.icon size={18} style={{
+                    color: stat.color === 'amber' ? '#d97706' :
                       stat.color === 'emerald' ? '#059669' :
                       stat.color === 'blue' ? '#2563eb' : '#9333ea'
                   }} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] text-gray-400 font-medium leading-tight">{stat.label}</p>
-                  <p className="text-sm font-bold text-gray-800 truncate leading-tight mt-0.5">{stat.value}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium truncate">{stat.label}</p>
+                  <p className="text-sm sm:text-lg font-bold text-gray-800 truncate">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -384,18 +422,18 @@ export default function KasirPage() {
 
         <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
 
-          {/* MENU SECTION */}
-          <div className="lg:col-span-2 space-y-3">
+          {/* ==================== MENU SECTION ==================== */}
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
 
-            {/* Category Filter - horizontal scroll */}
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {/* Category Filter */}
+            <div className="flex items-center gap-3 overflow-x-auto pb-1 -mx-3 px-3 sm:mx-0 sm:px-0">
               {categories.map(cat => (
                 <button
                   key={cat.key}
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer whitespace-nowrap flex-shrink-0 active:scale-95 ${
                     activeCategory === cat.key
-                      ? 'bg-amber-500 text-white shadow-md'
+                      ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
                       : 'bg-white text-gray-600 border border-gray-200'
                   }`}
                 >
@@ -404,7 +442,7 @@ export default function KasirPage() {
               ))}
             </div>
 
-            {/* Menu Grid - 2 columns always on mobile */}
+            {/* Menu Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
               {filteredMenu.map(item => {
                 const qty = cart[item.id_menu] || 0
@@ -414,29 +452,32 @@ export default function KasirPage() {
                 return (
                   <div
                     key={item.id_menu}
-                    className={`bg-white rounded-2xl border-2 overflow-hidden transition-all ${
-                      qty > 0 ? 'border-amber-400 shadow-md shadow-amber-100' : 'border-gray-100'
+                    className={`bg-white rounded-2xl border-2 transition-all overflow-hidden ${
+                      qty > 0
+                        ? 'border-amber-400 shadow-lg shadow-amber-100'
+                        : 'border-gray-100'
                     }`}
                   >
-                    <div className="p-3">
+                    <div className="p-3 sm:p-4">
                       {/* Top Row */}
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      <div className="flex items-start justify-between mb-1.5 sm:mb-2">
+                        <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-semibold ${
                           isJumbo ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
                         }`}>
                           {isJumbo ? '22oz' : '16oz'}
                         </span>
+
                         <div className="flex items-center gap-1">
                           {hasResep && (
                             <button
                               onClick={(e) => { e.stopPropagation(); setResepModal(item) }}
-                              className="w-6 h-6 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center cursor-pointer"
+                              className="w-6 h-6 sm:w-7 sm:h-7 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center active:bg-amber-200 cursor-pointer"
                             >
-                              <FileText size={10} />
+                              <FileText size={11} />
                             </button>
                           )}
                           {qty > 0 && (
-                            <span className="w-6 h-6 bg-amber-500 text-white rounded-lg flex items-center justify-center text-[10px] font-bold">
+                            <span className="w-6 h-6 sm:w-7 sm:h-7 bg-amber-500 text-white rounded-lg flex items-center justify-center text-[10px] sm:text-xs font-bold">
                               {qty}
                             </span>
                           )}
@@ -445,34 +486,38 @@ export default function KasirPage() {
 
                       {/* Name */}
                       <h3
-                        className="font-semibold text-gray-800 text-xs leading-snug mb-1 cursor-pointer line-clamp-2"
+                        className="font-semibold text-gray-800 text-xs sm:text-sm leading-tight mb-0.5 sm:mb-1 cursor-pointer active:text-amber-600 line-clamp-2"
                         onClick={() => setResepModal(item)}
                       >
                         {item.nama_item}
                       </h3>
 
                       {/* Price */}
-                      <p className="text-amber-600 font-bold text-sm mb-2">
+                      <p className="text-amber-600 font-bold text-base sm:text-lg">
                         {formatRp(item.harga_jual)}
                       </p>
 
-                      {/* Qty Controls */}
-                      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-100">
                         <button
                           onClick={() => updateCart(item.id_menu, -1)}
                           disabled={qty === 0}
-                          className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer ${
+                          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center cursor-pointer active:scale-90 ${
                             qty > 0 ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-300'
                           }`}
                         >
-                          <Minus size={13} />
+                          <Minus size={14} />
                         </button>
-                        <span className="font-bold text-base text-gray-800 w-7 text-center">{qty}</span>
+
+                        <span className="font-bold text-lg sm:text-xl text-gray-800 w-8 text-center">
+                          {qty}
+                        </span>
+
                         <button
                           onClick={() => updateCart(item.id_menu, 1)}
-                          className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center cursor-pointer"
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-100 text-emerald-600 active:bg-emerald-200 flex items-center justify-center cursor-pointer active:scale-90"
                         >
-                          <Plus size={13} />
+                          <Plus size={14} />
                         </button>
                       </div>
                     </div>
@@ -480,13 +525,13 @@ export default function KasirPage() {
                     {/* Lihat Resep */}
                     <button
                       onClick={() => setResepModal(item)}
-                      className={`w-full py-1.5 text-[10px] font-medium flex items-center justify-center gap-1 cursor-pointer ${
+                      className={`w-full py-2 text-[10px] sm:text-xs font-medium flex items-center justify-center gap-1 cursor-pointer ${
                         hasResep
-                          ? 'bg-amber-50 text-amber-600 border-t border-amber-100'
-                          : 'bg-gray-50 text-gray-400 border-t border-gray-100'
+                          ? 'bg-amber-50 text-amber-600 active:bg-amber-100 border-t border-amber-100'
+                          : 'bg-gray-50 text-gray-400 active:bg-gray-100 border-t border-gray-100'
                       }`}
                     >
-                      <Eye size={10} />
+                      <Eye size={11} />
                       {hasResep ? 'Lihat Resep' : 'Detail'}
                     </button>
                   </div>
@@ -502,8 +547,10 @@ export default function KasirPage() {
             )}
           </div>
 
-          {/* DESKTOP SIDEBAR */}
+          {/* ==================== DESKTOP SIDEBAR ==================== */}
           <div className="hidden lg:block space-y-4">
+
+            {/* Desktop Cart */}
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden sticky top-20">
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="font-bold text-gray-800 flex items-center gap-2">
@@ -516,6 +563,7 @@ export default function KasirPage() {
                   </button>
                 )}
               </div>
+
               <div className="max-h-64 overflow-y-auto">
                 {totalItem === 0 ? (
                   <div className="p-8 text-center">
@@ -546,13 +594,14 @@ export default function KasirPage() {
                   </div>
                 )}
               </div>
+
               <div className="p-4 bg-gray-50 border-t border-gray-100">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-800 font-bold">Total</span>
                   <span className="text-2xl font-bold text-gray-800">{formatRp(totalHarga)}</span>
                 </div>
                 <button onClick={handleSubmit} disabled={loading || totalItem === 0}
-                  className={`w-full py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`w-full py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer btn-press ${
                     totalItem > 0
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-200'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -563,6 +612,7 @@ export default function KasirPage() {
               </div>
             </div>
 
+            {/* Desktop History */}
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="font-bold text-gray-800 flex items-center gap-2">
@@ -571,6 +621,7 @@ export default function KasirPage() {
                 </h3>
                 <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">{riwayat.length}</span>
               </div>
+
               <div className="max-h-80 overflow-y-auto">
                 {riwayat.length === 0 ? (
                   <div className="p-6 text-center">
@@ -581,7 +632,7 @@ export default function KasirPage() {
                     {riwayat.slice(0, 10).map(trx => (
                       <div key={trx.id_transaksi} className="px-4 py-3 hover:bg-gray-50">
                         <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0 mr-2">
+                          <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-gray-800 truncate">{trx.menu_jualan?.nama_item}</p>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className="text-xs text-gray-400">
@@ -591,13 +642,14 @@ export default function KasirPage() {
                               <span className="text-xs text-gray-400">{trx.jumlah_beli} cup</span>
                             </div>
                           </div>
-                          <span className="text-sm font-bold text-emerald-600 flex-shrink-0">+{formatRp(trx.total_bayar)}</span>
+                          <span className="text-sm font-bold text-emerald-600">+{formatRp(trx.total_bayar)}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
+
               {riwayat.length > 0 && (
                 <div className="p-4 bg-emerald-50 border-t border-emerald-100">
                   <div className="flex items-center justify-between">
@@ -611,48 +663,61 @@ export default function KasirPage() {
         </div>
       </div>
 
-      {/* MOBILE FLOATING BOTTOM BAR */}
+      {/* ==================== MOBILE FLOATING BOTTOM BAR ==================== */}
       <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden">
+        {/* Cart Summary Bar */}
         {totalItem > 0 && (
           <div className="mx-3 mb-2">
             <button
               onClick={() => setShowCart(true)}
-              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl p-3.5 flex items-center justify-between shadow-xl cursor-pointer"
+              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl p-4 flex items-center justify-between shadow-xl shadow-amber-200/50 cursor-pointer active:scale-[0.98]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-                  <ShoppingBag size={18} />
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <ShoppingBag size={20} />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold">{totalItem} item dipilih</p>
-                  <p className="text-xs text-amber-100">Tap untuk checkout</p>
+                  <p className="text-sm font-semibold">{totalItem} item</p>
+                  <p className="text-xs text-amber-100">Tap untuk lihat</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-base font-bold">{formatRp(totalHarga)}</p>
-                <ChevronUp size={13} className="ml-auto text-amber-200" />
+                <p className="text-lg font-bold">{formatRp(totalHarga)}</p>
+                <ChevronUp size={14} className="ml-auto text-amber-200" />
               </div>
             </button>
           </div>
         )}
 
-        <div className="bg-white border-t border-gray-100 px-6 py-2 flex items-center justify-around safe-area-bottom">
-          <button onClick={() => setShowHistory(true)} className="flex flex-col items-center gap-0.5 py-1 cursor-pointer">
+        {/* Bottom Navigation */}
+        <div className="bg-white border-t border-gray-100 px-6 py-2 flex items-center justify-around">
+          <button
+            onClick={() => setShowHistory(true)}
+            className="flex flex-col items-center gap-0.5 py-1 cursor-pointer"
+          >
             <Clock size={20} className="text-gray-400" />
             <span className="text-[10px] text-gray-500 font-medium">Riwayat</span>
           </button>
-          <button onClick={() => setShowCart(true)} className="relative flex flex-col items-center gap-0.5 py-1 cursor-pointer">
+
+          <button
+            onClick={() => setShowCart(true)}
+            className="relative flex flex-col items-center gap-0.5 py-1 cursor-pointer"
+          >
             <div className="relative">
               <ShoppingBag size={20} className="text-amber-500" />
               {totalItem > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
-                  {totalItem > 9 ? '9+' : totalItem}
+                  {totalItem}
                 </span>
               )}
             </div>
             <span className="text-[10px] text-amber-600 font-semibold">Keranjang</span>
           </button>
-          <button onClick={fetchRiwayat} className="flex flex-col items-center gap-0.5 py-1 cursor-pointer">
+
+          <button
+            className="flex flex-col items-center gap-0.5 py-1 cursor-pointer"
+            onClick={fetchRiwayat}
+          >
             <Receipt size={20} className="text-gray-400" />
             <span className="text-[10px] text-gray-500 font-medium">Refresh</span>
           </button>
