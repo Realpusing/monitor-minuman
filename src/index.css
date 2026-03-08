@@ -1,199 +1,94 @@
-/* src/index.css */
-
 @import "tailwindcss";
 
-/* ================================================================
-   1. GLOBAL RESET — Paksa semua element tidak meluber
-   ================================================================ */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  /* Batasi semua element agar tidak lebih lebar dari parent */
-  max-width: 100%;
-}
-
-/* ================================================================
-   2. VIEWPORT ROOT — Kunci utama responsive
-   ================================================================ */
-
-html {
-  height: 100%;
-  overflow-x: hidden;
-  /* Cegah iOS auto-zoom text */
-  -webkit-text-size-adjust: 100%;
-  /* Hilangkan highlight tap di mobile */
-  -webkit-tap-highlight-color: transparent;
-  /* Smooth scroll */
-  scroll-behavior: smooth;
-}
-
-body {
-  /* dvh = dynamic viewport height, ikut address bar mobile */
-  min-height: 100dvh;
-  min-height: 100%; /* fallback browser lama */
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, sans-serif;
-  background: #f9fafb;
-  color: #1f2937;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* Prevent pull-to-refresh di mobile saat tidak perlu */
-  overscroll-behavior-y: contain;
-}
-
-#root {
-  min-height: 100dvh;
-  min-height: 100%;
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ================================================================
-   3. ANTI-OVERFLOW — Tiap tipe element dibatasi
-   ================================================================ */
-
-/* Media elements */
-img, video, canvas, svg, iframe {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Form elements — WAJIB max-width */
-input, select, textarea, button {
-  max-width: 100%;
-  font: inherit;
-  border-radius: 0; /* reset iOS default */
-}
-
-/* Table — bungkus dalam scroll container */
-table {
-  max-width: 100%;
-  border-collapse: collapse;
-}
-
-/* Text elements — paksa wrap */
-p, h1, h2, h3, h4, h5, h6,
-span, a, li, label, td, th {
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-}
-
-/* Pre/code — horizontal scroll bukan meluber */
-pre, code {
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-/* ================================================================
-   4. iOS INPUT ZOOM FIX
-   Font < 16px bikin Safari auto-zoom. Paksa 16px di iOS.
-   ================================================================ */
-
-@supports (-webkit-touch-callout: none) {
-  input[type="text"],
-  input[type="number"],
-  input[type="email"],
-  input[type="password"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="url"],
-  input[type="date"],
-  input[type="datetime-local"],
-  input[type="time"],
-  input[type="month"],
-  input[type="week"],
-  select,
-  textarea {
-    font-size: 16px !important;
-  }
-}
-
-/* ================================================================
-   5. SAFE AREA — iPhone notch / Dynamic Island / Android pill
-   ================================================================ */
-
-.safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
-}
-
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.safe-left {
-  padding-left: env(safe-area-inset-left, 0px);
-}
-
-.safe-right {
-  padding-right: env(safe-area-inset-right, 0px);
-}
-
-.safe-x {
-  padding-left: env(safe-area-inset-left, 0px);
-  padding-right: env(safe-area-inset-right, 0px);
-}
-
-.safe-all {
-  padding: env(safe-area-inset-top, 0px)
-            env(safe-area-inset-right, 0px)
-            env(safe-area-inset-bottom, 0px)
-            env(safe-area-inset-left, 0px);
-}
-
-/* ================================================================
-   6. SCROLLBAR STYLING
-   ================================================================ */
-
-/* Hide scrollbar utility */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Custom thin scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 9999px;
+  background: #cbd5e1;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #94a3b8;
 }
 
-/* Firefox scrollbar */
+/* Smooth Transitions */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ================================================================
-   7. NUMBER INPUT — Hide spinner arrows
-   ================================================================ */
+/* Glassmorphism Card */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse Animation for Low Stock */
+@keyframes pulse-warning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pulse-warning {
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Card Hover Effect */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Press Effect */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Input Focus Ring */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #f59e0b;
+}
+
+/* Number Input - Hide Arrows */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -202,226 +97,4 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-/* ================================================================
-   8. ANIMATIONS
-   ================================================================ */
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pulse-warning {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.animate-slideUp {
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-slideDown {
-  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-scaleIn {
-  animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
-}
-
-.pulse-warning {
-  animation: pulse-warning 2s ease-in-out infinite;
-}
-
-/* Prefers reduced motion — matikan animasi */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ================================================================
-   9. UTILITY CLASSES
-   ================================================================ */
-
-/* Card base */
-.card {
-  background: white;
-  border-radius: 1rem;
-  border: 1px solid #f3f4f6;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.03);
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-/* Card hover (desktop only) */
-@media (hover: hover) {
-  .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
-  }
-}
-
-.card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Press effect */
-.btn-press:active {
-  transform: scale(0.97);
-}
-
-/* Touch-friendly minimum sizes */
-.touch-target {
-  min-width: 44px;
-  min-height: 44px;
-}
-
-/* ================================================================
-   10. FOCUS STYLES — Accessible focus ring
-   ================================================================ */
-
-/* Remove default outline, add custom ring */
-*:focus {
-  outline: none;
-}
-
-*:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Input-specific focus */
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
-}
-
-/* ================================================================
-   11. SELECTION COLOR
-   ================================================================ */
-
-::selection {
-  background: rgba(245, 158, 11, 0.2);
-  color: #92400e;
-}
-
-::-moz-selection {
-  background: rgba(245, 158, 11, 0.2);
-  color: #92400e;
-}
-
-/* ================================================================
-   12. RESPONSIVE TYPOGRAPHY — Fluid text scaling
-   ================================================================ */
-
-html {
-  /* Base 16px, scale between 14px (320w) - 16px (768w) */
-  font-size: clamp(14px, 3.5vw, 16px);
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-/* ================================================================
-   13. DARK MODE PREPARATION (optional, future-proof)
-   ================================================================ */
-
-@media (prefers-color-scheme: dark) {
-  /* Uncomment when ready:
-  html { color-scheme: dark; }
-  body { background: #111827; color: #f9fafb; }
-  */
-}
-
-/* ================================================================
-   14. PRINT STYLES
-   ================================================================ */
-
-@media print {
-  body {
-    background: white;
-    color: black;
-  }
-
-  .no-print,
-  nav,
-  .fixed {
-    display: none !important;
-  }
-
-  * {
-    box-shadow: none !important;
-  }
 }
